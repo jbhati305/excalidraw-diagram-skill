@@ -10,6 +10,7 @@ Compatible with any coding agent that supports skills. For agents that read from
 - **Evidence artifacts.** As an example, technical diagrams include real code snippets and actual JSON payloads.
 - **Built-in visual validation.** A Playwright-based render pipeline lets the agent see its own output, catch layout issues (overlapping text, misaligned arrows, unbalanced spacing), and fix them in a loop before delivering.
 - **Brand-customizable.** All colors and brand styles live in a single file (`references/color-palette.md`). Swap it out and every diagram follows your palette.
+- **System design component library.** ~65 ready-made icons (load balancers, databases, caches, queues, event streams, VPCs/subnets, Kubernetes, auth, observability, LLMs, ...) in `references/libraries/`, inserted with `references/library_tool.py`. The `.excalidrawlib` files also open directly in Excalidraw.
 
 ## Installation
 
@@ -48,6 +49,18 @@ The skill handles the rest — concept mapping, layout, JSON generation, renderi
 
 Edit `references/color-palette.md` to match your brand. Everything else in the skill is universal design methodology.
 
+## Component Library
+
+Browse what's available:
+
+```bash
+cd .claude/skills/excalidraw-diagram/references
+python library_tool.py list
+python library_tool.py sheet /tmp/catalog.excalidraw && uv run python render_excalidraw.py /tmp/catalog.excalidraw
+```
+
+Add your own: export a library from Excalidraw (Library → ⋯ → Export) into `references/libraries/`. See `references/component-library.md`.
+
 ## File Structure
 
 ```
@@ -57,6 +70,12 @@ excalidraw-diagram/
     color-palette.md                # Brand colors (edit this to customize)
     element-templates.md            # JSON templates for each element type
     json-schema.md                  # Excalidraw JSON format reference
+    component-library.md            # Icon catalog + how to use library_tool.py
+    library_tool.py                 # List / insert library components into a diagram
+    libraries/
+      system-design.excalidrawlib                     # LB, gateway, DBs, cache, queues, auth, AI, boundaries...
+      architecture-diagram-components.excalidrawlib   # Users, server, Slack/Docker/GitHub, VPC, subnets
+      software-architecture.excalidrawlib             # Hand-drawn microservice, DB, queue, web/mobile app
     render_excalidraw.py            # Render .excalidraw to PNG
     render_template.html            # Browser template for rendering
     pyproject.toml                  # Python dependencies (playwright)

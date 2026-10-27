@@ -247,7 +247,7 @@ Each section should be independently understandable: its elements, internal arro
 
 - **Don't generate the entire diagram in one response.** You will hit the output token limit and produce truncated, broken JSON. Even if the diagram is small enough to fit, splitting into sections produces better results.
 - **Don't use a coding agent** to generate the JSON. The agent won't have sufficient context about the skill's rules, and the coordination overhead negates any benefit.
-- **Don't write a Python generator script.** The templating and coordinate math seem helpful but introduce a layer of indirection that makes debugging harder. Hand-crafted JSON with descriptive IDs is more maintainable.
+- **Don't write a Python generator script.** The templating and coordinate math seem helpful but introduce a layer of indirection that makes debugging harder. Hand-crafted JSON with descriptive IDs is more maintainable. (Exception: insert library icons with `references/library_tool.py add` — see **Component Library**.)
 
 ---
 
@@ -341,6 +341,7 @@ Choose shape based on what it represents—or use no shape at all:
 | Process, action, step | `rectangle` | Contained action |
 | Abstract state, context | overlapping `ellipse` | Fuzzy, cloud-like |
 | Hierarchy node | lines + text (no boxes) | Structure through lines |
+| Real infrastructure (DB, queue, cache, LB, VPC...) | library icon (`library_tool.py`) | Instantly recognizable in system design diagrams |
 
 **Rule**: Default to no container. Add shapes only when they carry meaning. Aim for <30% of text elements to be inside containers.
 
@@ -444,6 +445,27 @@ See `references/element-templates.md` for copy-paste JSON templates for each ele
 
 ---
 
+## Component Library (System Design & Architecture Icons)
+
+For system design and software architecture diagrams, use the pre-built icons in `references/libraries/` instead of plain labeled boxes — a recognizable cylinder, queue, load balancer or VPC boundary lets the reader identify a component before reading its label. **Read `references/component-library.md` before using them** — it has the full catalog, the tool's flags and the rules for combining icons with this skill's design principles.
+
+Available sets:
+- **`system-design`** — 48 clean icons in palette colors: load balancer, API gateway, CDN, DNS, service, worker, serverless function, container, SQL/NoSQL/vector DBs, cache, object storage, queue, event stream, pub/sub, identity provider, WAF, rate limiter, monitoring, circuit breaker, LLM, AI agent, plus boundaries (cloud region, availability zone, Kubernetes cluster, trust boundary).
+- **`architecture-diagram-components`** — user(s), device, server, email, Slack, Docker, GitHub, VPC, public/private subnets.
+- **`software-architecture`** — hand-drawn microservice hexagon, database, queue, documents, web and mobile app.
+
+Insert them with the helper — never hand-copy icon JSON:
+
+```bash
+cd .claude/skills/excalidraw-diagram/references
+python library_tool.py list --search cache
+python library_tool.py add <diagram.excalidraw> "Cache" --x 600 --y 200 --label "Redis (sessions)"
+```
+
+`add` appends the icon with fresh IDs and prints its `icon_bbox` and `anchor_id`; use those to place and bind the arrows you hand-write. Boundaries (VPC, region, cluster) are automatically placed behind other elements. This is the one sanctioned use of a script in the build process: arrows, text, evidence artifacts and layout are still hand-crafted, section by section.
+
+---
+
 ## Render & Validate (MANDATORY)
 
 You cannot judge a diagram from JSON alone. After generating or editing the Excalidraw JSON, you MUST render it to PNG, view the image, and fix what you see — in a loop until it's right. This is a core part of the workflow, not a final check.
@@ -541,12 +563,13 @@ uv run playwright install chromium
 18. **Roughness**: `roughness: 0` for clean/modern (unless hand-drawn style requested)
 19. **Opacity**: `opacity: 100` for all elements (no transparency)
 20. **Container ratio**: <30% of text elements should be inside containers
+21. **Components**: Infrastructure in system design diagrams uses library icons (not generic boxes), in one consistent style
 
 ### Visual Validation (Render Required)
-21. **Rendered to PNG**: Diagram has been rendered and visually inspected
-22. **No text overflow**: All text fits within its container
-23. **No overlapping elements**: Shapes and text don't overlap unintentionally
-24. **Even spacing**: Similar elements have consistent spacing
-25. **Arrows land correctly**: Arrows connect to intended elements without crossing others
-26. **Readable at export size**: Text is legible in the rendered PNG
-27. **Balanced composition**: No large empty voids or overcrowded regions
+22. **Rendered to PNG**: Diagram has been rendered and visually inspected
+23. **No text overflow**: All text fits within its container
+24. **No overlapping elements**: Shapes and text don't overlap unintentionally
+25. **Even spacing**: Similar elements have consistent spacing
+26. **Arrows land correctly**: Arrows connect to intended elements without crossing others
+27. **Readable at export size**: Text is legible in the rendered PNG
+28. **Balanced composition**: No large empty voids or overcrowded regions

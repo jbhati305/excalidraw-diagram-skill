@@ -25,6 +25,24 @@ Colors encode meaning, not decoration. Each semantic purpose has a fill/stroke p
 
 ---
 
+## Component Category Colors
+
+Used by the `system-design` component library (`references/libraries/system-design.excalidrawlib`). If you change these, regenerate or recolor that library to match. When drawing your own component shapes, use the same mapping so icons and custom shapes agree.
+
+| Category | Fill | Stroke |
+|----------|------|--------|
+| Networking / edge (LB, gateway, CDN, DNS) | `#dbeafe` | `#1e40af` |
+| Compute (services, workers, functions, containers) | `#93c5fd` | `#1e3a5f` |
+| Data / storage (databases, cache, object storage) | `#a7f3d0` | `#047857` |
+| Messaging / events (queues, streams, pub/sub) | `#fed7aa` | `#c2410c` |
+| Security (auth, firewall, WAF, secrets) | `#fecaca` | `#b91c1c` |
+| Observability / ops (monitoring, logs, CI/CD) | `#fef3c7` | `#b45309` |
+| AI / ML (LLM, agent, embeddings) | `#ddd6fe` | `#6d28d9` |
+| External / third-party | `#ffffff` | `#64748b` (dashed stroke) |
+| Trust boundary | `transparent` | `#dc2626` (dashed stroke) |
+
+---
+
 ## Text Colors (Hierarchy)
 
 Use color on free-floating text to create visual hierarchy without containers.
